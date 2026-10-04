@@ -1,7 +1,4 @@
 def retrieve_phone_code(driver) -> str:
-    """This code retrieves phone confirmation number and returns it as a string.
-    Use it when application waits for the confirmation code to pass it into your tests.
-    The phone confirmation code can only be obtained after it was requested in application."""
 
     import json
     import time
@@ -27,7 +24,6 @@ def retrieve_phone_code(driver) -> str:
             raise Exception("No phone confirmation code found.\n"
                             "Please use retrieve_phone_code only after the code was requested in application.")
         return code
-
 
 # Checks if Routes is up and running. Do not change
 def is_url_reachable(url):

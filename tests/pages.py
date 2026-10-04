@@ -40,9 +40,16 @@ class UrbanRoutesPage:
     )
 
     # Phone
+    # Used to open the phone-number form.
     PHONE_NUMBER_BUTTON = (
         By.CLASS_NAME,
         "np-button"
+    )
+
+    # Used for the assertion after phone confirmation.
+    PHONE_NUMBER_TEXT = (
+        By.CLASS_NAME,
+        "np-text"
     )
 
     PHONE_INPUT = (
@@ -70,9 +77,16 @@ class UrbanRoutesPage:
     )
 
     # Payment
+    # Used to open the payment-method section.
     PAYMENT_METHOD = (
         By.CLASS_NAME,
         "pp-text"
+    )
+
+    # Used for the Cash/Card assertion.
+    PAYMENT_METHOD_VALUE = (
+        By.CLASS_NAME,
+        "pp-value-text"
     )
 
     ADD_CARD_BUTTON = (
@@ -87,7 +101,8 @@ class UrbanRoutesPage:
 
     CARD_CODE_INPUT = (
         By.XPATH,
-        "//input[@id='code' and contains(@class, 'card-input')]"
+        "//input[@id='code' and "
+        "contains(@class, 'card-input')]"
     )
 
     LINK_BUTTON = (
@@ -107,14 +122,16 @@ class UrbanRoutesPage:
     BLANKET_CLICK = (
         By.XPATH,
         "//div[@class='r-sw-label' and "
-        "contains(normalize-space(.), 'Blanket and handkerchiefs')]"
+        "contains(normalize-space(.), "
+        "'Blanket and handkerchiefs')]"
         "/following-sibling::div[@class='r-sw']//span"
     )
 
     BLANKET_SWITCH = (
         By.XPATH,
         "//div[@class='r-sw-label' and "
-        "contains(normalize-space(.), 'Blanket and handkerchiefs')]"
+        "contains(normalize-space(.), "
+        "'Blanket and handkerchiefs')]"
         "/following-sibling::div[@class='r-sw']//input"
     )
 
@@ -136,7 +153,7 @@ class UrbanRoutesPage:
     # Final order
     ORDER_BUTTON = (
         By.CLASS_NAME,
-        "smart-button-secondary"
+        "smart-button"
     )
 
     CAR_SEARCH_MODAL = (
@@ -163,7 +180,7 @@ class UrbanRoutesPage:
             EC.visibility_of_element_located(
                 self.TO_INPUT
             )
-        )
+        ).get_attribute("value")
 
         to_input.clear()
         to_input.send_keys(address)
@@ -183,13 +200,11 @@ class UrbanRoutesPage:
         ).get_attribute("value")
 
     def click_call_taxi(self):
-        button = self.wait.until(
+        self.wait.until(
             EC.element_to_be_clickable(
                 self.CALL_TAXI_BUTTON
             )
-        )
-
-        button.click()
+        ).click()
 
     # =========================
     # SUPPORTIVE TARIFF
@@ -229,7 +244,6 @@ class UrbanRoutesPage:
             )
         ).click()
 
-        # Enter the phone number.
         phone_input = self.wait.until(
             EC.visibility_of_element_located(
                 self.PHONE_INPUT
@@ -265,9 +279,9 @@ class UrbanRoutesPage:
     def get_phone_number(self):
         return self.wait.until(
             EC.visibility_of_element_located(
-                self.PHONE_INPUT
+                self.PHONE_NUMBER_TEXT
             )
-        ).get_attribute("value")
+        ).text
 
     # =========================
     # CREDIT CARD
@@ -276,7 +290,7 @@ class UrbanRoutesPage:
     def get_payment_method_text(self):
         return self.wait.until(
             EC.visibility_of_element_located(
-                self.PAYMENT_METHOD
+                self.PAYMENT_METHOD_VALUE
             )
         ).text
 
@@ -311,18 +325,17 @@ class UrbanRoutesPage:
 
         card_code_input.send_keys(card_code)
 
-        # Move focus away from CVV.
-        # This triggers the page validation/update.
+        # Move focus away from CVV so validation is triggered.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.CARD_NUMBER_INPUT
             )
         ).click()
 
-        # Give the page time to update the Link button.
+        # Allow the Link button to update.
         time.sleep(2)
 
-        # Locate the current Link button after the update.
+        # Locate the updated Link button and click it.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.LINK_BUTTON
