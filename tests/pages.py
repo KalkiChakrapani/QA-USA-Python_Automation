@@ -180,7 +180,7 @@ class UrbanRoutesPage:
             EC.visibility_of_element_located(
                 self.TO_INPUT
             )
-        )
+        ).get_attribute("value")
 
         to_input.clear()
         to_input.send_keys(address)
@@ -237,6 +237,7 @@ class UrbanRoutesPage:
     # =========================
 
     def enter_phone_number(self, phone_number):
+        # Open the phone-number form.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.PHONE_NUMBER_BUTTON
@@ -411,8 +412,11 @@ class UrbanRoutesPage:
         ).click()
 
     def is_car_search_modal_visible(self):
-        return self.wait.until(
-            EC.visibility_of_element_located(
-                self.CAR_SEARCH_MODAL
-            )
-        ).is_displayed()
+        try:
+            return self.wait.until(
+                EC.visibility_of_element_located(
+                    self.CAR_SEARCH_MODAL
+                )
+            ).is_displayed()
+        except Exception:
+            return False
