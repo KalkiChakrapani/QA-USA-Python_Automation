@@ -27,11 +27,15 @@ class TestUrbanRoutes:
 
     def test_set_route(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
 
         assert (
             urban_routes_page.get_from_address()
@@ -45,13 +49,21 @@ class TestUrbanRoutes:
 
     def test_select_supportive_plan(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         assert (
             "active"
@@ -60,22 +72,35 @@ class TestUrbanRoutes:
 
     def test_fill_phone_number(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         urban_routes_page.enter_phone_number(
             data.PHONE_NUMBER
         )
+        sleep(2)
 
         urban_routes_page.click_phone_next()
+        sleep(3)
 
         code = h.retrieve_phone_code(self.driver)
+        sleep(2)
+
         urban_routes_page.enter_phone_code(code)
+        sleep(3)
 
         assert (
             urban_routes_page.get_phone_number()
@@ -84,20 +109,28 @@ class TestUrbanRoutes:
 
     def test_add_credit_card(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         urban_routes_page.add_credit_card(
             data.CARD_NUMBER,
             data.CARD_CODE
         )
 
-        sleep(5)
+        sleep(7)
 
         assert (
             "Card"
@@ -106,17 +139,26 @@ class TestUrbanRoutes:
 
     def test_comment_for_driver(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         urban_routes_page.enter_driver_comment(
             data.MESSAGE_FOR_DRIVER
         )
+        sleep(2)
 
         assert (
             urban_routes_page.get_driver_comment()
@@ -125,15 +167,24 @@ class TestUrbanRoutes:
 
     def test_order_blanket_and_handkerchiefs(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         urban_routes_page.order_blanket_and_handkerchiefs()
+        sleep(2)
 
         assert (
             urban_routes_page
@@ -142,15 +193,24 @@ class TestUrbanRoutes:
 
     def test_order_2_ice_creams(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         urban_routes_page.order_ice_creams(2)
+        sleep(2)
 
         assert (
             urban_routes_page.get_ice_cream_quantity()
@@ -159,29 +219,44 @@ class TestUrbanRoutes:
 
     def test_order_taxi(self):
         self.driver.get(data.URBAN_ROUTES_URL)
+        sleep(3)
 
         urban_routes_page = UrbanRoutesPage(self.driver)
 
         urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        sleep(2)
+
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
+        sleep(2)
+
         urban_routes_page.click_call_taxi()
+        sleep(3)
+
         urban_routes_page.select_supportive_plan()
+        sleep(2)
 
         urban_routes_page.enter_phone_number(
             data.PHONE_NUMBER
         )
+        sleep(2)
 
         # Click Next before retrieving the SMS code.
         urban_routes_page.click_phone_next()
+        sleep(3)
 
         code = h.retrieve_phone_code(self.driver)
+        sleep(2)
+
         urban_routes_page.enter_phone_code(code)
+        sleep(3)
 
         urban_routes_page.enter_driver_comment(
             data.MESSAGE_FOR_DRIVER
         )
+        sleep(2)
 
         urban_routes_page.click_order()
+        sleep(4)
 
         assert (
             urban_routes_page.is_car_search_modal_visible()
