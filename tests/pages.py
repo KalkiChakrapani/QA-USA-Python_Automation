@@ -34,52 +34,56 @@ class UrbanRoutesPage:
 
     SELECTED_SUPPORTIVE_TARIFF = (
         By.XPATH,
-        "//div[contains(@class, 'tcard') and contains(@class, 'active')]"
-        "[.//div[contains(normalize-space(.), 'Supportive')]]"
+        "//div[contains(@class, 'tcard') and "
+        "contains(@class, 'active') and "
+        ".//div[contains(normalize-space(.), 'Supportive')]]"
     )
 
     # Phone
     PHONE_NUMBER_BUTTON = (
-        By.XPATH,
-        "//div[contains(@class, 'np-text') and "
-        "contains(normalize-space(.), 'Phone number')]"
+        By.CLASS_NAME,
+        "np-button"
     )
 
-    PHONE_INPUT = (By.ID, "phone")
+    PHONE_INPUT = (
+        By.ID,
+        "phone"
+    )
 
     PHONE_NEXT_BUTTON = (
         By.XPATH,
         "//button[contains(@class, 'button') and "
-        "contains(normalize-space(.), 'Next')]"
+        "contains(@class, 'full') and "
+        "normalize-space(.)='Next']"
     )
 
-    PHONE_CODE_INPUT = (By.ID, "code")
+    PHONE_CODE_INPUT = (
+        By.ID,
+        "code"
+    )
 
     PHONE_CONFIRM_BUTTON = (
         By.XPATH,
-        "//button[contains(normalize-space(.), 'Confirm')]"
+        "//button[contains(@class, 'button') and "
+        "contains(@class, 'full') and "
+        "normalize-space(.)='Confirm']"
     )
 
     # Payment
     PAYMENT_METHOD = (
-        By.XPATH,
-        "//div[contains(@class, 'pp-text') and "
-        "contains(normalize-space(.), 'Payment method')]"
-    )
-
-    PAYMENT_METHOD_CONTAINER = (
-        By.XPATH,
-        "//div[contains(@class, 'pp-text') and "
-        "contains(normalize-space(.), 'Payment method')]/.."
+        By.CLASS_NAME,
+        "pp-text"
     )
 
     ADD_CARD_BUTTON = (
-        By.XPATH,
-        "//div[contains(@class, 'pp-title') and "
-        "contains(normalize-space(.), 'Add card')]"
+        By.CLASS_NAME,
+        "pp-plus-container"
     )
 
-    CARD_NUMBER_INPUT = (By.ID, "number")
+    CARD_NUMBER_INPUT = (
+        By.ID,
+        "number"
+    )
 
     CARD_CODE_INPUT = (
         By.XPATH,
@@ -88,17 +92,16 @@ class UrbanRoutesPage:
 
     LINK_BUTTON = (
         By.XPATH,
-        "//button[contains(normalize-space(.), 'Link')]"
-    )
-
-    CLOSE_PAYMENT_MODAL = (
-        By.XPATH,
-        "//div[contains(@class, 'payment-picker')]"
-        "//button[contains(@class, 'close-button')]"
+        "//button[contains(@class, 'button') and "
+        "contains(@class, 'full') and "
+        "normalize-space(.)='Link']"
     )
 
     # Driver comment
-    COMMENT_INPUT = (By.ID, "comment")
+    COMMENT_INPUT = (
+        By.ID,
+        "comment"
+    )
 
     # Blanket and handkerchiefs
     BLANKET_CLICK = (
@@ -130,44 +133,63 @@ class UrbanRoutesPage:
         "//div[@class='counter-value']"
     )
 
-    # Order
-    ORDER_BUTTON = (By.CLASS_NAME, "smart-button")
+    # Final order
+    ORDER_BUTTON = (
+        By.CLASS_NAME,
+        "smart-button-secondary"
+    )
 
-    CAR_SEARCH_MODAL = (By.CLASS_NAME, "order-body")
+    CAR_SEARCH_MODAL = (
+        By.CLASS_NAME,
+        "order-body"
+    )
 
     # =========================
     # ADDRESS METHODS
     # =========================
 
     def enter_from_address(self, address):
-        self.wait.until(
-            EC.visibility_of_element_located(self.FROM_INPUT)
-        ).send_keys(address)
+        from_input = self.wait.until(
+            EC.visibility_of_element_located(
+                self.FROM_INPUT
+            )
+        )
+
+        from_input.clear()
+        from_input.send_keys(address)
 
     def enter_to_address(self, address):
-        self.wait.until(
-            EC.visibility_of_element_located(self.TO_INPUT)
-        ).send_keys(address)
+        to_input = self.wait.until(
+            EC.visibility_of_element_located(
+                self.TO_INPUT
+            )
+        )
+
+        to_input.clear()
+        to_input.send_keys(address)
 
     def get_from_address(self):
         return self.wait.until(
-            EC.visibility_of_element_located(self.FROM_INPUT)
+            EC.visibility_of_element_located(
+                self.FROM_INPUT
+            )
         ).get_attribute("value")
 
     def get_to_address(self):
         return self.wait.until(
-            EC.visibility_of_element_located(self.TO_INPUT)
+            EC.visibility_of_element_located(
+                self.TO_INPUT
+            )
         ).get_attribute("value")
 
     def click_call_taxi(self):
         button = self.wait.until(
-            EC.element_to_be_clickable(self.CALL_TAXI_BUTTON)
+            EC.element_to_be_clickable(
+                self.CALL_TAXI_BUTTON
+            )
         )
 
-        self.driver.execute_script(
-            "arguments[0].click();",
-            button
-        )
+        button.click()
 
     # =========================
     # SUPPORTIVE TARIFF
@@ -186,36 +208,38 @@ class UrbanRoutesPage:
             ).click()
 
     def is_supportive_selected(self):
-        element = self.wait.until(
-            EC.presence_of_element_located(
-                self.SUPPORTIVE_TARIFF
-            )
+        selected = self.driver.find_elements(
+            *self.SELECTED_SUPPORTIVE_TARIFF
         )
 
-        parent = element.find_element(
-            By.XPATH,
-            "./.."
-        )
+        if selected:
+            return selected[0].get_attribute("class")
 
-        return parent.get_attribute("class")
+        return ""
 
     # =========================
     # PHONE
     # =========================
 
     def enter_phone_number(self, phone_number):
+        # Open the phone-number form.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.PHONE_NUMBER_BUTTON
             )
         ).click()
 
-        self.wait.until(
+        # Enter the phone number.
+        phone_input = self.wait.until(
             EC.visibility_of_element_located(
                 self.PHONE_INPUT
             )
-        ).send_keys(phone_number)
+        )
 
+        phone_input.clear()
+        phone_input.send_keys(phone_number)
+
+    def click_phone_next(self):
         self.wait.until(
             EC.element_to_be_clickable(
                 self.PHONE_NEXT_BUTTON
@@ -223,11 +247,14 @@ class UrbanRoutesPage:
         ).click()
 
     def enter_phone_code(self, code):
-        self.wait.until(
+        code_input = self.wait.until(
             EC.visibility_of_element_located(
                 self.PHONE_CODE_INPUT
             )
-        ).send_keys(code)
+        )
+
+        code_input.clear()
+        code_input.send_keys(code)
 
         self.wait.until(
             EC.element_to_be_clickable(
@@ -237,7 +264,7 @@ class UrbanRoutesPage:
 
     def get_phone_number(self):
         return self.wait.until(
-            EC.presence_of_element_located(
+            EC.visibility_of_element_located(
                 self.PHONE_INPUT
             )
         ).get_attribute("value")
@@ -249,29 +276,33 @@ class UrbanRoutesPage:
     def get_payment_method_text(self):
         return self.wait.until(
             EC.visibility_of_element_located(
-                self.PAYMENT_METHOD_CONTAINER
+                self.PAYMENT_METHOD
             )
         ).text
 
     def add_credit_card(self, card_number, card_code):
+        # Open Payment Method.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.PAYMENT_METHOD
             )
         ).click()
 
+        # Open Add Card.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.ADD_CARD_BUTTON
             )
         ).click()
 
+        # Enter card number.
         self.wait.until(
             EC.visibility_of_element_located(
                 self.CARD_NUMBER_INPUT
             )
         ).send_keys(card_number)
 
+        # Enter CVV.
         card_code_input = self.wait.until(
             EC.visibility_of_element_located(
                 self.CARD_CODE_INPUT
@@ -280,14 +311,18 @@ class UrbanRoutesPage:
 
         card_code_input.send_keys(card_code)
 
+        # Move focus away from CVV.
+        # This triggers the page validation/update.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.CARD_NUMBER_INPUT
             )
         ).click()
 
+        # Give the page time to update the Link button.
         time.sleep(2)
 
+        # Locate the current Link button after the update.
         self.wait.until(
             EC.element_to_be_clickable(
                 self.LINK_BUTTON
@@ -299,11 +334,14 @@ class UrbanRoutesPage:
     # =========================
 
     def enter_driver_comment(self, message):
-        self.wait.until(
+        comment_input = self.wait.until(
             EC.visibility_of_element_located(
                 self.COMMENT_INPUT
             )
-        ).send_keys(message)
+        )
+
+        comment_input.clear()
+        comment_input.send_keys(message)
 
     def get_driver_comment(self):
         return self.wait.until(
@@ -333,14 +371,12 @@ class UrbanRoutesPage:
     # =========================
 
     def order_ice_creams(self, quantity):
-        plus_button = self.wait.until(
-            EC.element_to_be_clickable(
-                self.ICE_CREAM_PLUS
-            )
-        )
-
         for _ in range(quantity):
-            plus_button.click()
+            self.wait.until(
+                EC.element_to_be_clickable(
+                    self.ICE_CREAM_PLUS
+                )
+            ).click()
 
     def get_ice_cream_quantity(self):
         value = self.wait.until(
@@ -363,8 +399,11 @@ class UrbanRoutesPage:
         ).click()
 
     def is_car_search_modal_visible(self):
-        return self.wait.until(
-            EC.visibility_of_element_located(
-                self.CAR_SEARCH_MODAL
-            )
-        ).is_displayed()
+        try:
+            return self.wait.until(
+                EC.visibility_of_element_located(
+                    self.CAR_SEARCH_MODAL
+                )
+            ).is_displayed()
+        except Exception:
+            return False
